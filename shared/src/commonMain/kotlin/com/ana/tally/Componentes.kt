@@ -109,12 +109,54 @@ fun BotonPrincipal(texto: String, onClick: () -> Unit) {
 
 @Composable
 fun TextoConEnlace(texto: String, enlace: String, onClick: () -> Unit) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(texto)
+    Row {
+        Text(
+            texto,
+            modifier = Modifier.alignByBaseline().weight(1f, fill = false)
+        )
         Text(
             enlace,
             color = VerdeTally,
-            modifier = Modifier.clickable(onClick = onClick).padding(4.dp)
+            softWrap = false,
+            modifier = Modifier
+                .alignByBaseline()
+                .clickable(onClick = onClick)
+                .padding(start = 4.dp)
         )
+    }
+}
+
+@Composable
+fun CampoPais(pais: String, onPaisChange: (String) -> Unit) {
+    val paises = listOf("Colombia", "España", "México", "Argentina", "Chile", "Perú")
+    var abierto by remember { mutableStateOf(false) }
+
+    Box {
+        OutlinedTextField(
+            value = pais,
+            onValueChange = { },
+            readOnly = true,
+            label = { Text("País") },
+            singleLine = true,
+            shape = RoundedCornerShape(12.dp),
+            colors = coloresCampo(),
+            trailingIcon = {
+                IconButton(onClick = { abierto = true }) {
+                    Text("›", fontSize = 28.sp)
+                }
+            },
+            modifier = Modifier.fillMaxWidth()
+        )
+        DropdownMenu(expanded = abierto, onDismissRequest = { abierto = false }) {
+            paises.forEach { p ->
+                DropdownMenuItem(
+                    text = { Text(p) },
+                    onClick = {
+                        onPaisChange(p)
+                        abierto = false
+                    }
+                )
+            }
+        }
     }
 }
